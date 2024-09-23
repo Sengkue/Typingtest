@@ -3,17 +3,16 @@ const userInput = document.getElementById("user-input");
 const startButton = document.getElementById("start-button");
 const resultElement = document.getElementById("result");
 const timeLeftElement = document.getElementById("time-left");
+const timerElement = document.getElementById("timer");
 
-let timer;
-let timeLeft = 60; // 60 seconds
-let startTime, endTime;
+let startTime, timer, timeLimit = 30; // Time limit in seconds
 
 // Fetch random text from the Lorem Ipsum API
 function fetchText() {
     fetch('https://loripsum.net/api/1/short')
         .then(response => response.text())
         .then(data => {
-            textElement.textContent = data.trim();
+            textElement.textContent = data;
         })
         .catch(error => {
             console.error('Error fetching text:', error);
@@ -27,57 +26,42 @@ startButton.addEventListener("click", () => {
     userInput.disabled = false;
     userInput.focus();
     resultElement.textContent = "";
-    timeLeft = 60;
-    timeLeftElement.textContent = timeLeft;
+    timeLeftElement.textContent = timeLimit;
+    startTimer();
     fetchText(); // Fetch new text when starting the test
+});
 
-    // Start the timer
-    clearInterval(timer);
+// Start the countdown timer
+function startTimer() {
     timer = setInterval(() => {
-        timeLeft--;
-        timeLeftElement.textContent = timeLeft;
-
-        if (timeLeft <= 0) {
+        timeLimit--;
+        timeLeftElement.textContent = timeLimit;
+        
+        if (timeLimit <= 0) {
             clearInterval(timer);
-            endTest(false);
+            endTest(false); // Time's up
         }
     }, 1000);
-});
+}
 
-// Monitor user input
-userInput.addEventListener("input", () => {
-    const typedText = userInput.value;
-    const originalText = textElement.textContent;
-
-    // Highlight correct and incorrect input
-    let highlightedText = '';
-    for (let i = 0; i < typedText.length; i++) {
-        if (typedText[i] === originalText[i]) {
-            highlightedText += `<span class="correct">${typedText[i]}</span>`;
-        } else {
-            highlightedText += `<span class="incorrect">${typedText[i]}</span>`;
-        }
-    }
-    highlightedText += originalText.slice(typedText.length); // Add remaining original text
-    textElement.innerHTML = highlightedText;
-
-    // Check if the text is completely typed correctly
-    if (typedText === originalText) {
-        endTest(true);
-    }
-});
-
-// End test function
+// End the test
 function endTest(success) {
-    clearInterval(timer);
     userInput.disabled = true;
-    const endTime = new Date().getTime();
-    const timeTaken = (endTime - startTime) / 1000; // in seconds
-    const wordsPerMinute = (textElement.textContent.split(" ").length / timeTaken) * 60;
-
+    clearInterval(timer);
+    
     if (success) {
-        resultElement.textContent = `Well done! Time taken: ${timeTaken.toFixed(2)} seconds. WPM: ${Math.round(wordsPerMinute)}`;
+        resultElement.textContent = "Well done! You've completed the test.";
     } else {
         resultElement.textContent = "Time's up! Please try again.";
     }
 }
+
+// Monitor user input
+userInput.addEventListener("input", () => {
+    const typedText = userInput.value.trim();
+
+    // Check if the typed text is correct
+    if (typedText === textElement.textContent.trim()) {
+        endTest(true); // User completed typing correctly
+    }
+});
