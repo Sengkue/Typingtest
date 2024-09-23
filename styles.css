@@ -74,10 +74,15 @@ button:hover {
     white-space: pre-wrap;
 }
 
+.correct {
+    color: green; /* Highlight correct words in green */
+    font-weight: bold; /* Optional: make them bold */
+}
+
 .incorrect {
-    color: red;
+    color: red; /* Highlight incorrect words in red */
     font-weight: bold;
-    text-decoration: underline; /* Optional */
+    text-decoration: underline; /* Optional: underline incorrect words */
 }
 
 .delete-button {
