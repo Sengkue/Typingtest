@@ -71,6 +71,7 @@ storySelect.addEventListener("change", () => {
         userInput.dataset.selectedStory = selectedStory.text; // Store the selected story text for comparison
         userInput.value = ""; // Clear user input
         resultElement.textContent = "";
+        userInput.disabled = true; // Disable input until start
     } else {
         highlightedText.innerHTML = ''; // Clear if no story is selected
     }
@@ -109,6 +110,12 @@ function calculateSpeed(elapsed) {
     speedElement.textContent = wpm;
 
     highlightIncorrectWords();
+
+    // Check if the user has completed typing the story
+    const originalText = userInput.dataset.selectedStory.trim();
+    if (typedText === originalText) {
+        endTest();
+    }
 }
 
 // Highlight incorrect words
@@ -127,6 +134,13 @@ function highlightIncorrectWords() {
     }).join(" ");
 
     highlightedText.innerHTML = highlightedWords; // Display highlighted text
+}
+
+// End typing test
+function endTest() {
+    clearInterval(timer);
+    userInput.disabled = true;
+    resultElement.textContent = "Test completed! Great job!";
 }
 
 // Event listeners for user input
