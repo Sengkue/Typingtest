@@ -75,27 +75,14 @@ button:hover {
 }
 
 .correct {
-    color: green; /* Highlight correct words in green */
+    color: green; /* Highlight correct characters in green */
     font-weight: bold; /* Optional: make them bold */
 }
 
 .incorrect {
-    color: red; /* Highlight incorrect words in red */
+    color: red; /* Highlight incorrect characters in red */
     font-weight: bold;
-    text-decoration: underline; /* Optional: underline incorrect words */
-}
-
-.delete-button {
-    background: transparent;
-    border: none;
-    color: red;
-    cursor: pointer;
-    font-size: 1.5em;
-    transition: transform 0.2s;
-}
-
-.delete-button:hover {
-    transform: scale(1.2);
+    text-decoration: underline; /* Optional: underline incorrect characters */
 }
 
 #result, #timer, #speed {

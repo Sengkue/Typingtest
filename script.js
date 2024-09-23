@@ -104,34 +104,37 @@ function updateTime() {
 
 // Calculate typing speed
 function calculateSpeed(elapsed) {
-    const typedText = userInput.value.trim();
-    const wordCount = typedText.split(" ").filter(word => word).length;
-    const wpm = Math.round((wordCount / elapsed) * 60) || 0; // Avoid division by zero
+    const typedText = userInput.value;
+    const wpm = Math.round((typedText.split(" ").length / elapsed) * 60) || 0; // Avoid division by zero
     speedElement.textContent = wpm;
 
-    highlightIncorrectWords();
+    highlightIncorrectCharacters();
 
     // Check if the user has completed typing the story
-    const originalText = userInput.dataset.selectedStory.trim();
+    const originalText = userInput.dataset.selectedStory;
     if (typedText === originalText) {
         endTest();
     }
 }
 
-// Highlight incorrect words
-function highlightIncorrectWords() {
-    const typedText = userInput.value.trim().split(" ");
-    const originalText = userInput.dataset.selectedStory.split(" ");
+// Highlight incorrect characters
+function highlightIncorrectCharacters() {
+    const typedText = userInput.value;
+    const originalText = userInput.dataset.selectedStory;
     
-    const highlightedWords = originalText.map((word, index) => {
-        const typedWord = typedText[index];
-        if (typedWord === word) {
-            return `<span class="correct">${word}</span>`; // Wrap correct words
-        } else if (typedWord && typedWord !== word) {
-            return `<span class="incorrect">${typedWord}</span>`; // Wrap incorrect words
+    let highlightedWords = "";
+    for (let i = 0; i < originalText.length; i++) {
+        const originalChar = originalText[i];
+        const typedChar = typedText[i];
+
+        if (typedChar === undefined) {
+            highlightedWords += originalChar; // No typing yet
+        } else if (typedChar === originalChar) {
+            highlightedWords += `<span class="correct">${originalChar}</span>`; // Highlight correct characters
+        } else {
+            highlightedWords += `<span class="incorrect">${typedChar}</span>`; // Highlight incorrect characters
         }
-        return word; // Return original word if not typed yet
-    }).join(" ");
+    }
 
     highlightedText.innerHTML = highlightedWords; // Display highlighted text
 }
@@ -144,5 +147,5 @@ function endTest() {
 }
 
 // Event listeners for user input
-userInput.addEventListener("input", highlightIncorrectWords);
+userInput.addEventListener("input", highlightIncorrectCharacters);
 window.onload = loadStories;
