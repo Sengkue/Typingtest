@@ -75,14 +75,14 @@ button:hover {
 }
 
 .correct {
-    color: green; /* Highlight correct characters in green */
+    color: green; /* Highlight correct words in green */
     font-weight: bold; /* Optional: make them bold */
 }
 
 .incorrect {
-    color: red; /* Highlight incorrect characters in red */
+    color: red; /* Highlight incorrect words in red */
     font-weight: bold;
-    text-decoration: underline; /* Optional: underline incorrect characters */
+    text-decoration: underline; /* Optional: underline incorrect words */
 }
 
 #result, #timer, #speed {
