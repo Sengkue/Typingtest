@@ -9,6 +9,7 @@ const resultElement = document.getElementById("result");
 const timeElapsedElement = document.getElementById("time-elapsed");
 const speedElement = document.getElementById("speed-value");
 const storyDisplay = document.getElementById("story-display");
+const highlightedText = document.getElementById("highlighted-text");
 
 let startTime, timer;
 
@@ -58,6 +59,7 @@ deleteButton.addEventListener("click", () => {
     
     // Clear the displayed story
     storyDisplay.textContent = '';
+    highlightedText.innerHTML = ''; // Clear highlighted text
 });
 
 // Display the selected story
@@ -94,6 +96,7 @@ startButton.addEventListener("click", () => {
         
         startTime = new Date().getTime();
         timer = setInterval(updateTime, 1000);
+        highlightedText.innerHTML = ''; // Clear highlighted text
     }
 });
 
@@ -121,12 +124,12 @@ function highlightIncorrectWords() {
     
     const highlightedWords = typedText.map((word, index) => {
         if (word !== originalText[index]) {
-            return `<span class="incorrect">${word}</span>`;
+            return `<span class="incorrect">${word}</span>`; // Wrap incorrect words
         }
-        return word;
+        return word; // Return correct words unchanged
     }).join(" ");
 
-    userInput.innerHTML = highlightedWords;
+    highlightedText.innerHTML = highlightedWords; // Display highlighted text
 }
 
 // End typing test
@@ -149,10 +152,6 @@ function endTest() {
 }
 
 // Event listeners for user input
-userInput.addEventListener("input", () => {
-    if (userInput.value === userInput.dataset.selectedStory) {
-        endTest();
-    }
-});
+userInput.addEventListener("input", highlightIncorrectWords);
 userInput.addEventListener("blur", endTest);
 window.onload = loadStories;
