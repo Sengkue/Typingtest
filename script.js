@@ -9,7 +9,8 @@ const resultElement = document.getElementById("result");
 const timeElapsedElement = document.getElementById("time-elapsed");
 const speedElement = document.getElementById("speed-value");
 const highlightedText = document.getElementById("highlighted-text");
-const countdownElement = document.getElementById("countdown"); // New countdown element
+const countdownElement = document.getElementById("countdown");
+const errorSound = document.getElementById("error-sound"); // Audio element for error sound
 
 let startTime, timer, countdownTimer;
 
@@ -155,6 +156,8 @@ function highlightIncorrectCharacters() {
         const typedWord = typedWords[i] || ""; // Handle undefined typed words
 
         let highlightedChars = "";
+        let hasError = false; // Track if there's an error in the current word
+
         for (let j = 0; j < originalWord.length; j++) {
             const originalChar = originalWord[j];
             const typedChar = typedWord[j];
@@ -165,7 +168,14 @@ function highlightIncorrectCharacters() {
                 highlightedChars += `<span class="correct">${originalChar}</span>`; // Highlight correct characters
             } else {
                 highlightedChars += `<span class="incorrect">${typedChar}</span>`; // Highlight incorrect characters
+                hasError = true; // Mark error found
             }
+        }
+
+        // Play sound if there was an error
+        if (hasError) {
+            errorSound.currentTime = 0; // Reset sound
+            errorSound.play(); // Play error sound
         }
 
         highlightedWords += highlightedChars + " "; // Add space after each word
