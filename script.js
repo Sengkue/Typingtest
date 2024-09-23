@@ -1,3 +1,4 @@
+const storyTitleInput = document.getElementById("story-title");
 const storyInput = document.getElementById("story-input");
 const addStoryButton = document.getElementById("add-story-button");
 const storyListElement = document.getElementById("story-list");
@@ -12,36 +13,38 @@ let startTime, timer;
 // Load stories from local storage
 function loadStories() {
     const stories = JSON.parse(localStorage.getItem("stories")) || [];
-    stories.forEach(story => addStoryToList(story));
+    stories.forEach(({ title, text }) => addStoryToList(title, text));
 }
 
 // Add story to the list and local storage
-function addStoryToList(story) {
+function addStoryToList(title, text) {
     const li = document.createElement("li");
-    li.textContent = story;
-    li.onclick = () => selectStory(story);
+    li.textContent = title;
+    li.onclick = () => selectStory(title, text);
     storyListElement.appendChild(li);
 }
 
 // Add story on button click
 addStoryButton.addEventListener("click", () => {
+    const title = storyTitleInput.value.trim();
     const story = storyInput.value.trim();
-    if (story) {
+    if (title && story) {
         const stories = JSON.parse(localStorage.getItem("stories")) || [];
-        stories.push(story);
+        stories.push({ title, text: story });
         localStorage.setItem("stories", JSON.stringify(stories));
-        addStoryToList(story);
-        storyInput.value = ""; // Clear input field
+        addStoryToList(title, story);
+        storyTitleInput.value = ""; // Clear title input
+        storyInput.value = ""; // Clear story input
     }
 });
 
 // Select a story for typing test
-function selectStory(story) {
+function selectStory(title, text) {
     userInput.value = "";
     userInput.disabled = false;
     userInput.focus();
-    userInput.placeholder = "Start typing the selected story...";
-    userInput.dataset.selectedStory = story; // Store the selected story
+    userInput.placeholder = `Start typing "${title}"...`;
+    userInput.dataset.selectedStory = text; // Store the selected story
     resultElement.textContent = "";
     timeElapsedElement.textContent = "0";
     speedElement.textContent = "0";
