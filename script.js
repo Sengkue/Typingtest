@@ -74,6 +74,23 @@ function calculateSpeed(elapsed) {
     const wordCount = typedText.split(" ").filter(word => word).length;
     const wpm = Math.round((wordCount / elapsed) * 60) || 0; // Avoid division by zero
     speedElement.textContent = wpm;
+
+    highlightIncorrectWords();
+}
+
+// Highlight incorrect words
+function highlightIncorrectWords() {
+    const typedText = userInput.value.trim().split(" ");
+    const originalText = userInput.dataset.selectedStory.split(" ");
+    
+    const highlightedWords = typedText.map((word, index) => {
+        if (word !== originalText[index]) {
+            return `<span class="incorrect">${word}</span>`;
+        }
+        return word;
+    }).join(" ");
+
+    userInput.innerHTML = highlightedWords;
 }
 
 // End typing test
