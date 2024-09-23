@@ -8,6 +8,12 @@ const speedElement = document.getElementById("speed-value");
 let startTime, timer;
 
 function startTest() {
+    const originalText = textElement.value.trim();
+    if (originalText === "") {
+        alert("Please paste a text or story in the box above.");
+        return;
+    }
+    
     userInput.value = "";
     userInput.disabled = false;
     userInput.focus();
@@ -37,7 +43,7 @@ function endTest() {
     userInput.disabled = true;
 
     const typedText = userInput.value;
-    const originalText = textElement.textContent;
+    const originalText = textElement.value.trim();
     let errors = 0;
 
     // Count incorrect characters
@@ -50,10 +56,28 @@ function endTest() {
     resultElement.textContent = `Errors: ${errors}`;
 }
 
+// Store text in local storage
+function storeText() {
+    const textToStore = textElement.value;
+    localStorage.setItem("typingText", textToStore);
+}
+
+// Load text from local storage if available
+function loadText() {
+    const savedText = localStorage.getItem("typingText");
+    if (savedText) {
+        textElement.value = savedText;
+    }
+}
+
 startButton.addEventListener("click", startTest);
 userInput.addEventListener("input", () => {
-    if (userInput.value === textElement.textContent) {
+    if (userInput.value === textElement.value.trim()) {
         endTest();
     }
 });
 userInput.addEventListener("blur", endTest);
+textElement.addEventListener("input", storeText);
+
+// Load any saved text when the page loads
+window.onload = loadText;
