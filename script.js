@@ -11,7 +11,6 @@ const speedElement = document.getElementById("speed-value");
 const highlightedText = document.getElementById("highlighted-text");
 
 let startTime, timer;
-let incorrectWordCount = 0; // To count incorrect words
 
 // Load stories from local storage
 function loadStories() {
@@ -73,7 +72,6 @@ storySelect.addEventListener("change", () => {
         userInput.value = ""; // Clear user input
         resultElement.textContent = "";
         userInput.disabled = true; // Disable input until start
-        incorrectWordCount = 0; // Reset incorrect word count
     } else {
         highlightedText.innerHTML = ''; // Clear if no story is selected
     }
@@ -110,7 +108,7 @@ function calculateSpeed(elapsed) {
     const wpm = Math.round((typedText.split(" ").length / elapsed) * 60) || 0; // Avoid division by zero
     speedElement.textContent = wpm;
 
-    highlightIncorrectWords();
+    highlightIncorrectCharacters();
 
     // Check if the user has completed typing the story
     const originalText = userInput.dataset.selectedStory;
@@ -119,24 +117,34 @@ function calculateSpeed(elapsed) {
     }
 }
 
-// Highlight incorrect words
-function highlightIncorrectWords() {
-    const typedText = userInput.value.trim().split(" ");
-    const originalText = userInput.dataset.selectedStory.split(" ");
-    
-    let highlightedWords = "";
-    for (let i = 0; i < originalText.length; i++) {
-        const originalWord = originalText[i];
-        const typedWord = typedText[i];
+// Highlight incorrect characters
+function highlightIncorrectCharacters() {
+    const typedText = userInput.value;
+    const originalText = userInput.dataset.selectedStory;
+    const typedWords = typedText.split(" ");
+    const originalWords = originalText.split(" ");
 
-        if (typedWord === originalWord) {
-            highlightedWords += `<span class="correct">${originalWord}</span> `;
-        } else if (typedWord) {
-            highlightedWords += `<span class="incorrect">${typedWord}</span> `;
-            incorrectWordCount++; // Count incorrect words
-        } else {
-            highlightedWords += originalWord + " "; // Preserve the original word if not typed yet
+    let highlightedWords = "";
+
+    for (let i = 0; i < originalWords.length; i++) {
+        const originalWord = originalWords[i];
+        const typedWord = typedWords[i] || ""; // Handle undefined typed words
+
+        let highlightedChars = "";
+        for (let j = 0; j < originalWord.length; j++) {
+            const originalChar = originalWord[j];
+            const typedChar = typedWord[j];
+
+            if (typedChar === undefined) {
+                highlightedChars += originalChar; // No typing yet
+            } else if (typedChar === originalChar) {
+                highlightedChars += `<span class="correct">${originalChar}</span>`; // Highlight correct characters
+            } else {
+                highlightedChars += `<span class="incorrect">${typedChar}</span>`; // Highlight incorrect characters
+            }
         }
+
+        highlightedWords += highlightedChars + " "; // Add space after each word
     }
 
     highlightedText.innerHTML = highlightedWords; // Display highlighted text
@@ -146,31 +154,34 @@ function highlightIncorrectWords() {
 function endTest() {
     clearInterval(timer);
     userInput.disabled = true;
-    resultElement.textContent = `Test completed! Incorrect words: ${incorrectWordCount}`;
+    resultElement.textContent = "Test completed! Great job!";
 }
 
 // Event listeners for user input
-userInput.addEventListener("input", highlightIncorrectWords);
-
-// Handle spacebar to skip to next word
-userInput.addEventListener("keydown", (event) => {
+userInput.addEventListener("input", highlightIncorrectCharacters);
+userInput.addEventListener("keypress", (event) => {
     if (event.key === " ") {
-        event.preventDefault(); // Prevent the default space action
-        const typedText = userInput.value.trim().split(" ");
-        const originalText = userInput.dataset.selectedStory.split(" ");
-        
-        const currentIndex = typedText.length - 1; // Last typed word index
-        const originalWord = originalText[currentIndex];
+        // Prevent default space behavior if the user tries to move to the next word
+        event.preventDefault();
+        // Move to the next word by updating the input
+        const typedText = userInput.value.trim();
+        const words = typedText.split(" ");
+        const currentWord = words[words.length - 1];
 
-        // If the typed word is incorrect, skip to the next word
-        if (typedText[currentIndex] !== originalWord) {
-            incorrectWordCount++; // Increment incorrect word count
-            userInput.value += " "; // Add a space to the input
+        // Check if the current word is correct
+        const originalText = userInput.dataset.selectedStory.split(" ");
+        const correctWord = originalText[words.length - 1];
+
+        if (currentWord === correctWord) {
+            // Clear the input for the next word
+            userInput.value += " "; // Add a space to move to the next word
+        } else {
+            // Allow corrections
+            userInput.value = typedText; // Keep the current input
         }
-        
-        highlightIncorrectWords(); // Update highlighting
+
+        highlightIncorrectCharacters(); // Update highlighting
     }
 });
 
-// Initialize stories on load
 window.onload = loadStories;
