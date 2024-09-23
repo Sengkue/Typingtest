@@ -118,6 +118,8 @@ function startTypingTest() {
     
     startTime = new Date().getTime();
     timer = setInterval(updateTime, 1000);
+    
+    userInput.focus(); // Set focus on the user input field
 }
 
 // Update time and speed
