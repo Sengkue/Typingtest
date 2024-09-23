@@ -11,9 +11,16 @@
         <h1>Typing Test</h1>
         <p id="text-to-type"></p>
         <textarea id="user-input" placeholder="Start typing here..." disabled></textarea>
-        <button id="start-button">Start Test</button>
-        <p id="timer">Time left: <span id="time-left">30</span> seconds</p>
+        <div>
+            <button id="start-button">Start Test</button>
+            <button id="set-time-3">3 Minutes</button>
+            <button id="set-time-5">5 Minutes</button>
+            <button id="set-time-10">10 Minutes</button>
+            <button id="set-time-15">15 Minutes</button>
+        </div>
+        <p id="timer">Time left: <span id="time-left">00</span> minutes</p>
         <p id="result"></p>
+        <p id="speed">Speed: <span id="speed-value">0</span> WPM</p>
     </div>
     <script src="script.js"></script>
 </body>
