@@ -8,13 +8,14 @@ const startButton = document.getElementById("start-button");
 const resultElement = document.getElementById("result");
 const timeElapsedElement = document.getElementById("time-elapsed");
 const speedElement = document.getElementById("speed-value");
+const storyDisplay = document.getElementById("story-display");
 
 let startTime, timer;
 
 // Load stories from local storage
 function loadStories() {
     const stories = JSON.parse(localStorage.getItem("stories")) || [];
-    stories.forEach(({ title, text }) => addStoryToSelect(title));
+    stories.forEach(({ title }) => addStoryToSelect(title));
 }
 
 // Add story to the select dropdown
@@ -54,6 +55,22 @@ deleteButton.addEventListener("click", () => {
     // Refresh the dropdown
     storySelect.innerHTML = '<option value="">-- Choose a story --</option>'; // Reset options
     updatedStories.forEach(({ title }) => addStoryToSelect(title));
+    
+    // Clear the displayed story
+    storyDisplay.textContent = '';
+});
+
+// Display the selected story
+storySelect.addEventListener("change", () => {
+    const selectedTitle = storySelect.value;
+    const stories = JSON.parse(localStorage.getItem("stories")) || [];
+    const selectedStory = stories.find(story => story.title === selectedTitle);
+    
+    if (selectedStory) {
+        storyDisplay.textContent = selectedStory.text; // Show the story text
+    } else {
+        storyDisplay.textContent = ''; // Clear if no story is selected
+    }
 });
 
 // Start typing test from the selected story
