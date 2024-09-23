@@ -18,11 +18,11 @@ body {
     width: 400px;
 }
 
-h1 {
+h1, h2 {
     margin-bottom: 20px;
 }
 
-#text-to-type, #user-input {
+#story-input, #user-input {
     width: 100%;
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -48,4 +48,18 @@ button:hover {
 #result, #timer, #speed {
     margin-top: 10px;
     font-weight: bold;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 15px;
+}
+
+li {
+    background: #e2e2e2;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
