@@ -92,3 +92,13 @@ li:hover {
         font-size: 14px;
     }
 }
+.incorrect {
+    color: red;
+    font-weight: bold;
+    animation: flash 0.5s infinite alternate;
+}
+
+@keyframes flash {
+    0% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
