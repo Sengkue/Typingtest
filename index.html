@@ -9,28 +9,32 @@
 <body>
     <div class="container">
         <h1>Typing Test</h1>
+        <input type="text" id="story-title" placeholder="Enter story title..." />
+        <textarea id="story-input" placeholder="Add your short story here..." rows="5"></textarea>
+        <button id="add-story-button">Add Story</button>
+        
+        <h2>Your Stories</h2>
         <div id="story-dropdown">
             <select id="story-select">
                 <option value="">-- Choose a story --</option>
             </select>
-            <button id="delete-button">Delete Story</button>
+            <button id="delete-button">❌</button>
         </div>
-        <div>
-            <input type="text" id="story-title" placeholder="Story Title" />
-            <textarea id="story-input" placeholder="Enter your story here..."></textarea>
-            <button id="add-story-button">Add Story</button>
-        </div>
+        <div id="story-display"></div>
+        <button id="start-button">Start Test</button>
         <div id="countdown" style="font-size: 30px; font-weight: bold; color: #333; display: none;"></div>
-        <button id="start-button">Start Typing Test</button>
-        <div id="highlighted-text"></div>
+
+        
+        <div id="highlighted-text"></div> <!-- Highlighted original text -->
+        
         <div id="user-input-container">
-            <textarea id="user-input" placeholder="Start typing..." disabled></textarea>
+            <textarea id="user-input" placeholder="Start typing here..." disabled></textarea>
         </div>
-        <div id="result"></div>
-        <div id="timer">Time Elapsed: <span id="time-elapsed">0</span> seconds</div>
-        <div id="speed">Speed: <span id="speed-value">0</span> WPM</div>
+        
+        <p id="result"></p>
+        <p id="timer">Time: <span id="time-elapsed">0</span> seconds</p>
+        <p id="speed">Speed: <span id="speed-value">0</span> WPM</p>
     </div>
-    
     <script src="script.js"></script>
 </body>
 </html>
