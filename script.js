@@ -1,7 +1,7 @@
 const storyTitleInput = document.getElementById("story-title");
 const storyInput = document.getElementById("story-input");
 const addStoryButton = document.getElementById("add-story-button");
-const storyListElement = document.getElementById("story-list");
+const storyDropdown = document.getElementById("story-dropdown");
 const userInput = document.getElementById("user-input");
 const startButton = document.getElementById("start-button");
 const resultElement = document.getElementById("result");
@@ -13,15 +13,15 @@ let startTime, timer;
 // Load stories from local storage
 function loadStories() {
     const stories = JSON.parse(localStorage.getItem("stories")) || [];
-    stories.forEach(({ title, text }) => addStoryToList(title, text));
+    stories.forEach(({ title, text }) => addStoryToDropdown(title, text));
 }
 
-// Add story to the list and local storage
-function addStoryToList(title, text) {
-    const li = document.createElement("li");
-    li.textContent = title;
-    li.onclick = () => selectStory(title, text);
-    storyListElement.appendChild(li);
+// Add story to the dropdown and local storage
+function addStoryToDropdown(title, text) {
+    const option = document.createElement("option");
+    option.value = text; // Store the text in the option value
+    option.textContent = title;
+    storyDropdown.appendChild(option);
 }
 
 // Add story on button click
@@ -32,37 +32,31 @@ addStoryButton.addEventListener("click", () => {
         const stories = JSON.parse(localStorage.getItem("stories")) || [];
         stories.push({ title, text: story });
         localStorage.setItem("stories", JSON.stringify(stories));
-        addStoryToList(title, story);
+        addStoryToDropdown(title, story);
         storyTitleInput.value = ""; // Clear title input
         storyInput.value = ""; // Clear story input
     }
 });
 
-// Select a story for typing test
-function selectStory(title, text) {
-    userInput.value = "";
+// Start typing test from the dropdown selection
+startButton.addEventListener("click", () => {
+    const selectedStory = storyDropdown.value;
+    if (!selectedStory) {
+        alert("Please select a story from the dropdown.");
+        return;
+    }
+    
     userInput.disabled = false;
-    userInput.focus();
-    userInput.placeholder = `Start typing "${title}"...`;
-    userInput.dataset.selectedStory = text; // Store the selected story
+    userInput.value = "";
+    userInput.placeholder = "Start typing...";
+    userInput.dataset.selectedStory = selectedStory; // Store the selected story text
     resultElement.textContent = "";
     timeElapsedElement.textContent = "0";
     speedElement.textContent = "0";
     
     startTime = new Date().getTime();
     timer = setInterval(updateTime, 1000);
-}
-
-// Start typing test
-function startTest() {
-    if (!userInput.dataset.selectedStory) {
-        alert("Please select a story from the list.");
-        return;
-    }
-    
-    startTime = new Date().getTime();
-    timer = setInterval(updateTime, 1000);
-}
+});
 
 // Update time and speed
 function updateTime() {
@@ -115,8 +109,7 @@ function endTest() {
     resultElement.textContent = `Errors: ${errors}`;
 }
 
-// Event listeners
-startButton.addEventListener("click", startTest);
+// Event listeners for user input
 userInput.addEventListener("input", () => {
     if (userInput.value === userInput.dataset.selectedStory) {
         endTest();
