@@ -141,3 +141,12 @@ li:hover {
 .delete-icon:hover {
     color: #cc0000; /* Darker red on hover */
 }
+
+#story-display {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    white-space: pre-wrap; /* Preserve whitespace and line breaks */
+}
