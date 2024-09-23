@@ -7,6 +7,7 @@ const startButton = document.getElementById("start-button");
 const resultElement = document.getElementById("result");
 const timeElapsedElement = document.getElementById("time-elapsed");
 const speedElement = document.getElementById("speed-value");
+const storyListElement = document.getElementById("story-list");
 
 let startTime, timer;
 
@@ -22,6 +23,15 @@ function addStoryToDropdown(title, text) {
     option.value = text; // Store the text in the option value
     option.textContent = title;
     storyDropdown.appendChild(option);
+
+    // Add to the story list
+    const li = document.createElement("li");
+    li.textContent = title;
+    const deleteIcon = document.createElement("i");
+    deleteIcon.classList.add("fas", "fa-trash", "delete-icon");
+    deleteIcon.onclick = () => deleteStory(title);
+    li.appendChild(deleteIcon);
+    storyListElement.appendChild(li);
 }
 
 // Add story on button click
@@ -37,6 +47,23 @@ addStoryButton.addEventListener("click", () => {
         storyInput.value = ""; // Clear story input
     }
 });
+
+// Delete story
+function deleteStory(title) {
+    const stories = JSON.parse(localStorage.getItem("stories")) || [];
+    const filteredStories = stories.filter(story => story.title !== title);
+    localStorage.setItem("stories", JSON.stringify(filteredStories));
+    
+    // Remove from dropdown and list
+    const optionToRemove = Array.from(storyDropdown.options).find(option => option.text === title);
+    if (optionToRemove) {
+        storyDropdown.removeChild(optionToRemove);
+    }
+    const listItemToRemove = Array.from(storyListElement.children).find(li => li.textContent === title);
+    if (listItemToRemove) {
+        storyListElement.removeChild(listItemToRemove);
+    }
+}
 
 // Start typing test from the dropdown selection
 startButton.addEventListener("click", () => {

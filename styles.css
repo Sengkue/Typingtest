@@ -131,3 +131,13 @@ li:hover {
         font-size: 14px;
     }
 }
+.delete-icon {
+    margin-left: 10px;
+    color: #ff4d4d; /* Red color for delete icon */
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.delete-icon:hover {
+    color: #cc0000; /* Darker red on hover */
+}
