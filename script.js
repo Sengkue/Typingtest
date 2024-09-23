@@ -1,36 +1,35 @@
 const storyTitleInput = document.getElementById("story-title");
 const storyInput = document.getElementById("story-input");
 const addStoryButton = document.getElementById("add-story-button");
-const storyDropdown = document.getElementById("story-dropdown");
+const storyListElement = document.getElementById("story-list");
 const userInput = document.getElementById("user-input");
 const startButton = document.getElementById("start-button");
 const resultElement = document.getElementById("result");
 const timeElapsedElement = document.getElementById("time-elapsed");
 const speedElement = document.getElementById("speed-value");
-const storyListElement = document.getElementById("story-list");
 
 let startTime, timer;
 
 // Load stories from local storage
 function loadStories() {
     const stories = JSON.parse(localStorage.getItem("stories")) || [];
-    stories.forEach(({ title, text }) => addStoryToDropdown(title, text));
+    stories.forEach(({ title, text }) => addStoryToList(title, text));
 }
 
-// Add story to the dropdown and local storage
-function addStoryToDropdown(title, text) {
-    const option = document.createElement("option");
-    option.value = text; // Store the text in the option value
-    option.textContent = title;
-    storyDropdown.appendChild(option);
-
-    // Add to the story list
+// Add story to the list and local storage
+function addStoryToList(title, text) {
     const li = document.createElement("li");
     li.textContent = title;
-    const deleteIcon = document.createElement("i");
-    deleteIcon.classList.add("fas", "fa-trash", "delete-icon");
-    deleteIcon.onclick = () => deleteStory(title);
-    li.appendChild(deleteIcon);
+
+    // Create delete button
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "❌"; // Use an emoji as a delete icon
+    deleteButton.className = "delete-button";
+    deleteButton.onclick = () => {
+        deleteStory(title);
+    };
+    
+    li.appendChild(deleteButton);
     storyListElement.appendChild(li);
 }
 
@@ -42,7 +41,7 @@ addStoryButton.addEventListener("click", () => {
         const stories = JSON.parse(localStorage.getItem("stories")) || [];
         stories.push({ title, text: story });
         localStorage.setItem("stories", JSON.stringify(stories));
-        addStoryToDropdown(title, story);
+        addStoryToList(title, story);
         storyTitleInput.value = ""; // Clear title input
         storyInput.value = ""; // Clear story input
     }
@@ -51,38 +50,35 @@ addStoryButton.addEventListener("click", () => {
 // Delete story
 function deleteStory(title) {
     const stories = JSON.parse(localStorage.getItem("stories")) || [];
-    const filteredStories = stories.filter(story => story.title !== title);
-    localStorage.setItem("stories", JSON.stringify(filteredStories));
+    const updatedStories = stories.filter(story => story.title !== title);
+    localStorage.setItem("stories", JSON.stringify(updatedStories));
     
-    // Remove from dropdown and list
-    const optionToRemove = Array.from(storyDropdown.options).find(option => option.text === title);
-    if (optionToRemove) {
-        storyDropdown.removeChild(optionToRemove);
-    }
-    const listItemToRemove = Array.from(storyListElement.children).find(li => li.textContent === title);
-    if (listItemToRemove) {
-        storyListElement.removeChild(listItemToRemove);
-    }
+    // Refresh the story list
+    storyListElement.innerHTML = "";
+    updatedStories.forEach(({ title, text }) => addStoryToList(title, text));
 }
 
-// Start typing test from the dropdown selection
+// Start typing test from the selected story
 startButton.addEventListener("click", () => {
-    const selectedStory = storyDropdown.value;
-    if (!selectedStory) {
-        alert("Please select a story from the dropdown.");
+    const selectedTitle = [...storyListElement.children].find(li => li.firstChild.textContent === userInput.value);
+    if (!selectedTitle) {
+        alert("Please select a story from the list.");
         return;
     }
     
-    userInput.disabled = false;
-    userInput.value = "";
-    userInput.placeholder = "Start typing...";
-    userInput.dataset.selectedStory = selectedStory; // Store the selected story text
-    resultElement.textContent = "";
-    timeElapsedElement.textContent = "0";
-    speedElement.textContent = "0";
-    
-    startTime = new Date().getTime();
-    timer = setInterval(updateTime, 1000);
+    const selectedStory = stories.find(story => story.title === selectedTitle.textContent);
+    if (selectedStory) {
+        userInput.disabled = false;
+        userInput.value = "";
+        userInput.placeholder = "Start typing...";
+        userInput.dataset.selectedStory = selectedStory.text; // Store the selected story text
+        resultElement.textContent = "";
+        timeElapsedElement.textContent = "0";
+        speedElement.textContent = "0";
+        
+        startTime = new Date().getTime();
+        timer = setInterval(updateTime, 1000);
+    }
 });
 
 // Update time and speed
