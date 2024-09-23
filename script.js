@@ -9,8 +9,9 @@ const resultElement = document.getElementById("result");
 const timeElapsedElement = document.getElementById("time-elapsed");
 const speedElement = document.getElementById("speed-value");
 const highlightedText = document.getElementById("highlighted-text");
+const countdownElement = document.getElementById("countdown"); // New countdown element
 
-let startTime, timer;
+let startTime, timer, countdownTimer;
 
 // Load stories from local storage
 function loadStories() {
@@ -85,6 +86,29 @@ startButton.addEventListener("click", () => {
         return;
     }
 
+    countdown(3); // Start countdown from 3
+});
+
+// Countdown function
+function countdown(seconds) {
+    let count = seconds;
+    countdownElement.textContent = count; // Show initial countdown value
+    countdownElement.style.display = "block"; // Show countdown element
+
+    countdownTimer = setInterval(() => {
+        count--;
+        countdownElement.textContent = count;
+
+        if (count < 0) {
+            clearInterval(countdownTimer);
+            countdownElement.style.display = "none"; // Hide countdown element
+            startTypingTest(); // Start the typing test after countdown
+        }
+    }, 1000);
+}
+
+// Start the typing test
+function startTypingTest() {
     userInput.disabled = false;
     userInput.placeholder = "Start typing...";
     resultElement.textContent = "";
@@ -93,7 +117,7 @@ startButton.addEventListener("click", () => {
     
     startTime = new Date().getTime();
     timer = setInterval(updateTime, 1000);
-});
+}
 
 // Update time and speed
 function updateTime() {
