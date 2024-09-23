@@ -5,12 +5,12 @@ const resultElement = document.getElementById("result");
 
 let startTime, endTime;
 
-// Fetch random text from the Lorem Ipsum API
+// Fetch random text from the Bacon Ipsum API
 function fetchText() {
-    fetch('https://loripsum.net/api/1/short')
-        .then(response => response.text())
+    fetch('https://baconipsum.com/api/?type=meat-and-filler&paras=1')
+        .then(response => response.json())
         .then(data => {
-            textElement.innerHTML = data;
+            textElement.textContent = data[0]; // Set the fetched text
         })
         .catch(error => {
             console.error('Error fetching text:', error);
