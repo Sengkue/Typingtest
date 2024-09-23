@@ -8,7 +8,6 @@ const startButton = document.getElementById("start-button");
 const resultElement = document.getElementById("result");
 const timeElapsedElement = document.getElementById("time-elapsed");
 const speedElement = document.getElementById("speed-value");
-const storyDisplay = document.getElementById("story-display");
 const highlightedText = document.getElementById("highlighted-text");
 
 let startTime, timer;
@@ -22,7 +21,7 @@ function loadStories() {
 // Add story to the select dropdown
 function addStoryToSelect(title) {
     const option = document.createElement("option");
-    option.value = title; // Use the title as value
+    option.value = title;
     option.textContent = title;
     storySelect.appendChild(option);
 }
@@ -54,11 +53,10 @@ deleteButton.addEventListener("click", () => {
     localStorage.setItem("stories", JSON.stringify(updatedStories));
     
     // Refresh the dropdown
-    storySelect.innerHTML = '<option value="">-- Choose a story --</option>'; // Reset options
+    storySelect.innerHTML = '<option value="">-- Choose a story --</option>';
     updatedStories.forEach(({ title }) => addStoryToSelect(title));
     
     // Clear the displayed story
-    storyDisplay.textContent = '';
     highlightedText.innerHTML = ''; // Clear highlighted text
 });
 
@@ -69,10 +67,12 @@ storySelect.addEventListener("change", () => {
     const selectedStory = stories.find(story => story.title === selectedTitle);
     
     if (selectedStory) {
-        storyDisplay.textContent = selectedStory.text; // Show the story text
-        highlightedText.innerHTML = ''; // Clear any previous highlights
+        highlightedText.innerHTML = selectedStory.text; // Show the original story text
+        userInput.dataset.selectedStory = selectedStory.text; // Store the selected story text for comparison
+        userInput.value = ""; // Clear user input
+        resultElement.textContent = "";
     } else {
-        storyDisplay.textContent = ''; // Clear if no story is selected
+        highlightedText.innerHTML = ''; // Clear if no story is selected
     }
 });
 
@@ -84,21 +84,14 @@ startButton.addEventListener("click", () => {
         return;
     }
 
-    const stories = JSON.parse(localStorage.getItem("stories")) || [];
-    const selectedStory = stories.find(story => story.title === selectedTitle);
-    if (selectedStory) {
-        userInput.disabled = false;
-        userInput.value = "";
-        userInput.placeholder = "Start typing...";
-        userInput.dataset.selectedStory = selectedStory.text; // Store the selected story text
-        resultElement.textContent = "";
-        timeElapsedElement.textContent = "0";
-        speedElement.textContent = "0";
-        
-        startTime = new Date().getTime();
-        timer = setInterval(updateTime, 1000);
-        highlightedText.innerHTML = ''; // Clear highlighted text
-    }
+    userInput.disabled = false;
+    userInput.placeholder = "Start typing...";
+    resultElement.textContent = "";
+    timeElapsedElement.textContent = "0";
+    speedElement.textContent = "0";
+    
+    startTime = new Date().getTime();
+    timer = setInterval(updateTime, 1000);
 });
 
 // Update time and speed
@@ -136,26 +129,6 @@ function highlightIncorrectWords() {
     highlightedText.innerHTML = highlightedWords; // Display highlighted text
 }
 
-// End typing test
-function endTest() {
-    clearInterval(timer);
-    userInput.disabled = true;
-
-    const typedText = userInput.value;
-    const originalText = userInput.dataset.selectedStory;
-    let errors = 0;
-
-    // Count incorrect characters
-    for (let i = 0; i < Math.max(typedText.length, originalText.length); i++) {
-        if (typedText[i] !== originalText[i]) {
-            errors++;
-        }
-    }
-
-    resultElement.textContent = `Errors: ${errors}`;
-}
-
 // Event listeners for user input
 userInput.addEventListener("input", highlightIncorrectWords);
-userInput.addEventListener("blur", endTest);
 window.onload = loadStories;
