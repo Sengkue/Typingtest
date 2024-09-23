@@ -70,6 +70,7 @@ storySelect.addEventListener("change", () => {
     
     if (selectedStory) {
         storyDisplay.textContent = selectedStory.text; // Show the story text
+        highlightedText.innerHTML = ''; // Clear any previous highlights
     } else {
         storyDisplay.textContent = ''; // Clear if no story is selected
     }
@@ -122,11 +123,14 @@ function highlightIncorrectWords() {
     const typedText = userInput.value.trim().split(" ");
     const originalText = userInput.dataset.selectedStory.split(" ");
     
-    const highlightedWords = typedText.map((word, index) => {
-        if (word !== originalText[index]) {
-            return `<span class="incorrect">${word}</span>`; // Wrap incorrect words
+    const highlightedWords = originalText.map((word, index) => {
+        const typedWord = typedText[index];
+        if (typedWord === word) {
+            return `<span class="correct">${word}</span>`; // Wrap correct words
+        } else if (typedWord && typedWord !== word) {
+            return `<span class="incorrect">${typedWord}</span>`; // Wrap incorrect words
         }
-        return word; // Return correct words unchanged
+        return word; // Return original word if not typed yet
     }).join(" ");
 
     highlightedText.innerHTML = highlightedWords; // Display highlighted text
