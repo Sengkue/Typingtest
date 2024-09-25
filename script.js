@@ -10,7 +10,8 @@ const timeElapsedElement = document.getElementById("time-elapsed");
 const speedElement = document.getElementById("speed-value");
 const highlightedText = document.getElementById("highlighted-text");
 const countdownElement = document.getElementById("countdown");
-const errorSound = document.getElementById("error-sound"); // Audio element for error sound
+const errorSound = document.getElementById("error-sound");
+const wordCountElement = document.getElementById("word-count-value"); // Word count element
 
 let startTime, timer, countdownTimer;
 
@@ -115,7 +116,8 @@ function startTypingTest() {
     resultElement.textContent = "";
     timeElapsedElement.textContent = "0";
     speedElement.textContent = "0";
-    
+    wordCountElement.textContent = "0"; // Reset word count
+
     startTime = new Date().getTime();
     timer = setInterval(updateTime, 1000);
     
@@ -131,8 +133,13 @@ function updateTime() {
 
 // Calculate typing speed
 function calculateSpeed(elapsed) {
-    const typedText = userInput.value;
-    const wpm = Math.round((typedText.split(" ").length / elapsed) * 60) || 0; // Avoid division by zero
+    const typedText = userInput.value.trim();
+    const wordsTyped = typedText.split(/\s+/).filter(word => word.length > 0).length; // Count non-empty words
+
+    // Update word count
+    wordCountElement.textContent = wordsTyped;
+
+    const wpm = Math.round((wordsTyped / elapsed) * 60) || 0; // Avoid division by zero
     speedElement.textContent = wpm;
 
     highlightIncorrectCharacters();
