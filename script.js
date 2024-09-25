@@ -155,35 +155,35 @@ function highlightIncorrectCharacters() {
 
     for (let i = 0; i < originalWords.length; i++) {
         const originalWord = originalWords[i];
-        const typedWord = typedWords[i] || ""; // Handle undefined typed words
+        const typedWord = typedWords[i] || ""; 
 
         let highlightedChars = "";
-        let hasError = false; // Track if there's an error in the current word
+        let hasError = false; 
 
         for (let j = 0; j < originalWord.length; j++) {
             const originalChar = originalWord[j];
             const typedChar = typedWord[j];
 
             if (typedChar === undefined) {
-                highlightedChars += originalChar; // No typing yet
+                highlightedChars += originalChar; 
             } else if (typedChar === originalChar) {
-                highlightedChars += `<span class="correct">${originalChar}</span>`; // Highlight correct characters
+                highlightedChars += `<span class="correct">${originalChar}</span>`; 
             } else {
-                highlightedChars += `<span class="incorrect">${typedChar}</span>`; // Highlight incorrect characters
-                hasError = true; // Mark error found
+                highlightedChars += `<span class="incorrect">${typedChar}</span>`;
+                hasError = true; 
             }
         }
 
-        // Play sound if there was an error
+       
         if (hasError) {
-            errorSound.currentTime = 0; // Reset sound
-            errorSound.play(); // Play error sound
+            errorSound.currentTime = 0; 
+            errorSound.play(); 
         }
 
-        highlightedWords += highlightedChars + " "; // Add space after each word
+        highlightedWords += highlightedChars + " "; 
     }
 
-    highlightedText.innerHTML = highlightedWords; // Display highlighted text
+    highlightedText.innerHTML = highlightedWords; 
 }
 
 // End typing test
