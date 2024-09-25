@@ -104,3 +104,9 @@ button:hover {
     border-radius: 5px;
     font-size: 16px;
 }
+#word-count {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 18px;
+    color: #555;
+}
